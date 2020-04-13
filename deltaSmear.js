@@ -9,10 +9,9 @@ let threshold=10;
 
 // CHOOSE IMG & RESISE
 function chooseImg() {
-    let whichImg = 'http://www.joewrightmusic.co.uk/wp-content/uploads/2020/01/' + int(random(44)) + '.jpg'; 
+    let whichImg = 'http://www.joewrightmusic.co.uk/P5/SmearImgs/' + int(random(44)) + '.jpg'; 
     // console.log(whichImg);
     img = loadImage(whichImg);
-    img.resize(1000,1000);
 }
 
 // SCRAMBLE ARRAY
@@ -35,19 +34,20 @@ function getXY(index){
 // RENDER DELTA
 function renderDelta(){
     //dont draw at edges
+    pg.background(0,0,0,0.1);
     for(let j=0; j<pg.width; j++){
         if(x>2 && x<1498){
             let current = img.get(x, y);
             let prev = img.get(x-1, y);
             for(let i=0; i<3; i++){
-                colour=[0,0,0,0.5];
+                colour=[0,0,0,0.4];
                 let delta = abs(current[i]-prev[i]);
                 if(delta>threshold){
-                    colour[i]=(delta-threshold)*0.3;
-                    pg.blendMode(SCREEN);
+                    colour[i]=(delta-threshold)*0.2;
+                    pg.blendMode(EXCLUSION);
                     pg.stroke(colour);
-                    pg.strokeWeight((delta-threshold)*0.05);
-                    pg.line(x, y, x, y+((delta-threshold)*(pg.height*0.0035)   ));
+                    pg.strokeWeight((delta-threshold)*0.03);
+                    pg.line(x, y, x, y+((delta-threshold)*(pg.height*0.002)   ));
                 }
             }
         }
@@ -72,19 +72,18 @@ function setup() {
     canvas.style('z-index', '1');
     colorMode(RGB,255,255,255,1.0);
     //create off screen graphics
-    pg = createGraphics(1500, 1500);
+    pg = createGraphics(1000, 1000);
     pg.colorMode(RGB,255,255,255,1.0);
     //set frame rate
-    frameRate(120);
+    frameRate(50);
     //scramble indeces
     scramble(indeces);
 }
 
 // DRAW
 function draw() {
-    background(0,0,0,0.2);
     renderDelta();
-    console.log(counter);
+    console.log(frameRate());
     if(counter>=1000000){
         counter=0;
         chooseImg();
